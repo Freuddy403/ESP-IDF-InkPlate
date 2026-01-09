@@ -1,0 +1,22 @@
+set(inkplate_srcs
+    src/drivers/eink.cpp
+    src/drivers/eink_6.cpp
+    src/graphical/graphics.cpp
+)
+
+set(inkplate_include_dirs
+    "include"
+    "include/drivers"
+    "include/fonts"
+    "include/graphical"
+    "include/services"
+    "include/tools"
+)
+
+
+idf_component_register(
+    SRCS ${inkplate_srcs}
+    INCLUDE_DIRS ${inkplate_include_dirs}
+)
+
+target_compile_definitions(${COMPONENT_LIB} PUBLIC INKPLATE_6)

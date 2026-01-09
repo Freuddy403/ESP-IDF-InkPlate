@@ -1,5 +1,7 @@
 #define __EINK__
 #include "eink.hpp"
+#include "rom/ets_sys.h"
+#include "esp_timer.h"
 
 // PIN_LUT built from the following:
 //
@@ -68,7 +70,7 @@ EInk::turn_off()
   wire.end_transmission();
 
   // Wait for all PWR rails to shut down
-  ESP::delay(100);
+  vTaskDelay(pdMS_TO_TICKS(100));
 
   // Disable 3V3 to the panel
   wire.begin_transmission(PWRMGR_ADDRESS);
@@ -93,7 +95,7 @@ EInk::turn_on()
   wakeup_set();
   vcom_set();
 
-  ESP::delay_microseconds(1800);
+  ets_delay_us(1800);
 
   //pwrup_set();
 
@@ -108,7 +110,7 @@ EInk::turn_on()
   wire.write(0b11100001);
   wire.end_transmission();
 
-  ESP::delay_microseconds(1000);
+  ets_delay_us(1000);
 
   // Switch TPS65186 into active mode
   wire.begin_transmission(PWRMGR_ADDRESS);
@@ -127,13 +129,19 @@ EInk::turn_on()
    ckv_clear();
     oe_clear();
 
-  unsigned long timer = ESP::millis();
+  //unsigned long timer = ESP::millis();
+  uint64_t timer = esp_timer_get_time() / 1000ULL; // en millisecondes
+
 
   do {
-    ESP::delay(1);
-  } while ((read_power_good() != PWR_GOOD_OK) && (ESP::millis() - timer) < 250);
+    //ESP::delay(1);
+    vTaskDelay(pdMS_TO_TICKS(1));
+  //} while ((read_power_good() != PWR_GOOD_OK) && (ESP::millis() - timer) < 250);
+  } while ((read_power_good() != PWR_GOOD_OK) && ((esp_timer_get_time() / 1000ULL) - timer) < 250);
 
-  if ((ESP::millis() - timer) >= 250) {
+
+  //if ((ESP::millis() - timer) >= 250) {
+  if (((esp_timer_get_time() / 1000ULL) - timer) >= 250) {
     wakeup_clear();
       vcom_clear();
      pwrup_clear();
@@ -160,16 +168,16 @@ EInk::read_power_good()
 void 
 EInk::vscan_start()
 {
-        ckv_set(); ESP::delay_microseconds( 7);
-      spv_clear(); ESP::delay_microseconds(10);
-      ckv_clear(); ESP::delay_microseconds( 0);
-        ckv_set(); ESP::delay_microseconds( 8);
-        spv_set(); ESP::delay_microseconds(10);
-      ckv_clear(); ESP::delay_microseconds( 0);
-        ckv_set(); ESP::delay_microseconds(18);
-      ckv_clear(); ESP::delay_microseconds( 0);
-        ckv_set(); ESP::delay_microseconds(18);
-      ckv_clear(); ESP::delay_microseconds( 0);
+        ckv_set(); ets_delay_us( 7);
+      spv_clear(); ets_delay_us(10);
+      ckv_clear(); ets_delay_us( 0);
+        ckv_set(); ets_delay_us( 8);
+        spv_set(); ets_delay_us(10);
+      ckv_clear(); ets_delay_us( 0);
+        ckv_set(); ets_delay_us(18);
+      ckv_clear(); ets_delay_us( 0);
+        ckv_set(); ets_delay_us(18);
+      ckv_clear(); ets_delay_us( 0);
         ckv_set();
 }
 
@@ -190,7 +198,7 @@ EInk::vscan_end()
      le_set();
    le_clear();
 
-  ESP::delay_microseconds(0);
+  ets_delay_us(0);
 }
 
 void 
@@ -246,11 +254,12 @@ EInk::read_temperature()
   if (get_panel_state() == PanelState::OFF) {
     Wire::enter();
     wakeup_set();
-    ESP::delay_microseconds(1800);
+    ets_delay_us(1800);
     pwrup_set();
     Wire::leave();
 
-    ESP::delay(5);
+    //ESP::delay(5);
+    vTaskDelay(pdMS_TO_TICKS(5));
   }
 
   Wire::enter();
@@ -260,7 +269,8 @@ EInk::read_temperature()
   wire.end_transmission();
   Wire::leave();
 
-  ESP::delay(5);
+  //ESP::delay(5);
+  vTaskDelay(pdMS_TO_TICKS(5));
 
   Wire::enter();
   wire.begin_transmission(PWRMGR_ADDRESS);
@@ -275,7 +285,8 @@ EInk::read_temperature()
     wakeup_clear();
     Wire::leave();
 
-    ESP::delay(5);
+    //ESP::delay(5);
+    vTaskDelay(pdMS_TO_TICKS(5));
   }
   else {
     Wire::leave();

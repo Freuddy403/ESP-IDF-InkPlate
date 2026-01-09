@@ -1,19 +1,29 @@
-FILE(GLOB_RECURSE inkplate_srcs src/**/*.cpp)
-FILE(GLOB inkplate_include_dirs include/*)
-LIST(FILTER inkplate_include_dirs EXCLUDE REGEX ".*/README$")
 
-if(CONFIG_INKPLATE_VARIANT_10)
-    set(INKPLATE_VARIANT "INKPLATE_10")
-elseif(CONFIG_INKPLATE_VARIANT_6PLUS)
-    set(INKPLATE_VARIANT "INKPLATE_6PLUS")
-elseif(CONFIG_INKPLATE_VARIANT_6)
-    set(INKPLATE_VARIANT "INKPLATE_6")
-endif()
+
+# if(CONFIG_INKPLATE_VARIANT_10)
+#     set(INKPLATE_VARIANT "INKPLATE_10")
+# elseif(CONFIG_INKPLATE_VARIANT_6PLUS)
+#     set(INKPLATE_VARIANT "INKPLATE_6PLUS")
+# elseif(CONFIG_INKPLATE_VARIANT_6)
+#     set(INKPLATE_VARIANT "INKPLATE_6")
+# endif()
+
+set(inkplate_srcs
+    "src/services/wire.cpp"
+    "src/drivers/mcp23017.cpp"
+    "src/drivers/eink.cpp"
+    "src/drivers/eink_6.cpp"
+    "src/minimal/inkplate_minimal_test.cpp"
+)
 
 idf_component_register(
     SRCS ${inkplate_srcs}
-    INCLUDE_DIRS ${inkplate_include_dirs}
-    REQUIRES fatfs nvs_flash esp_http_client
+    INCLUDE_DIRS 
+    "include"
+    "include/drivers"
+    "include/tools"
+    "include/services"
+    REQUIRES esp_timer esp_event esp_driver_gpio esp_driver_i2c driver
 )
 
-target_compile_definitions(${COMPONENT_LIB} PUBLIC ${INKPLATE_VARIANT})
+target_compile_definitions(${COMPONENT_LIB} PUBLIC INKPLATE_6)

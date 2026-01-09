@@ -2,7 +2,11 @@
 
 #include "frame_buffer.hpp"
 #include "mcp23017.hpp"
-#include "wire.hpp"
+//#include "wire.hpp"
+#include "services/wire.hpp"
+#include "soc/gpio_struct.h"
+#include "soc/gpio_reg.h"
+
 
 class EInk
 {

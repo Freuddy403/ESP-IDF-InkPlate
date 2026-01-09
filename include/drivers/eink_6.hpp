@@ -27,7 +27,8 @@ Distributed as-is; no warranty is given.
 #include <cinttypes>
 #include <cstring>
 
-#include "non_copyable.hpp"
+//#include "non_copyable.hpp"
+#include "tools/non_copyable.hpp"
 #include "driver/gpio.h"
 #include "mcp23017.hpp"
 #include "eink.hpp"

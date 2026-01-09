@@ -1,0 +1,35 @@
+FILE(GLOB_RECURSE inkplate_srcs src/**/*.cpp)
+FILE(GLOB inkplate_include_dirs include/*)
+LIST(FILTER inkplate_include_dirs EXCLUDE REGEX ".*/README$")
+
+if(CONFIG_INKPLATE_VARIANT_10)
+    set(INKPLATE_VARIANT "INKPLATE_10")
+elseif(CONFIG_INKPLATE_VARIANT_6PLUS)
+    set(INKPLATE_VARIANT "INKPLATE_6PLUS")
+elseif(CONFIG_INKPLATE_VARIANT_6)
+    set(INKPLATE_VARIANT "INKPLATE_6")
+endif()
+
+set(inkplate_include_dirs
+    "include"
+    "include/drivers"
+    "include/fonts"
+    "include/graphical"
+    "include/services"
+    "include/tools"
+)
+
+idf_component_register(
+    SRCS ${inkplate_srcs}
+    INCLUDE_DIRS ${inkplate_include_dirs}
+    PRIV_INCLUDE_DIRS
+    "include/tools"
+    "${IDF_PATH}/components/driver/deprecated"
+    "${IDF_PATH}/components/driver/i2c/include"
+    REQUIRES fatfs nvs_flash esp_http_client esp_wifi esp_netif esp_event mbedtls esp-tls esp_timer
+
+)
+
+target_compile_definitions(${COMPONENT_LIB} PUBLIC ${INKPLATE_VARIANT})
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-error=cpp)
+

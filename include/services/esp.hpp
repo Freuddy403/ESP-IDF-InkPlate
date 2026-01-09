@@ -13,6 +13,12 @@
 #include "esp_task_wdt.h"
 #include "driver/gpio.h"
 #include "driver/adc.h"
+#include "esp_timer.h"
+#include <inttypes.h>
+
+//#include "deprecated/driver/adc.h"
+
+
 
 static const uint8_t HIGH = 1;
 static const uint8_t LOW  = 0;
@@ -52,7 +58,7 @@ class ESP
 
     static int16_t analog_read(adc1_channel_t channel) {
       adc1_config_width(ADC_WIDTH_BIT_12);
-      adc1_config_channel_atten(channel, ADC_ATTEN_11db);
+      adc1_config_channel_atten(channel, ADC_ATTEN_DB_11);
 
       return adc1_get_raw(channel);
     }
@@ -63,7 +69,7 @@ class ESP
         mem = heap_caps_malloc(size, MALLOC_CAP_SPIRAM); 
       }
       if (mem == nullptr) {
-        ESP_LOGE(TAG, "Not enough memory on PSRAM!!! (Asking %u bytes)", size);
+        ESP_LOGE(TAG, "Not enough memory on PSRAM!!! (Asking %" PRIu32 " bytes)", size);
       }
       return mem;
     }
