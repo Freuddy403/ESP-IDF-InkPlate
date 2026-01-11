@@ -48,7 +48,6 @@ void Image::readBmpHeaderFromFile(FILE * f, bitmapHeader * h)
 
         readBmpHeader(buff, h);
         delete[] buff;
-
     }
     else
     {

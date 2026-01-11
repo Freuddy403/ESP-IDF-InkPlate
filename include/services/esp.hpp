@@ -58,7 +58,7 @@ class ESP
 
     static int16_t analog_read(adc1_channel_t channel) {
       adc1_config_width(ADC_WIDTH_BIT_12);
-      adc1_config_channel_atten(channel, ADC_ATTEN_DB_11);
+      adc1_config_channel_atten(channel, ADC_ATTEN_DB_12);
 
       return adc1_get_raw(channel);
     }

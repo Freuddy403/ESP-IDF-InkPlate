@@ -22,29 +22,30 @@ Distributed as-is; no warranty is given.
 #include "non_copyable.hpp"
 
 #include "mcp23017.hpp"
-#include "battery.hpp"
+//#include "battery.hpp"
 #include "eink.hpp"
 #include "eink_6.hpp"
-#include "eink_6plus.hpp"
-#include "eink_10.hpp"
+//#include "eink_6plus.hpp"
+//#include "eink_10.hpp"
 #include "rtc_pcf85063.hpp" 
 
 #if defined(EXTENDED_CASE) && (defined(INKPLATE_6) || defined(INKPLATE_10))
   #include "press_keys.hpp"
 #elif defined(INKPLATE_6) || defined(INKPLATE_10)
-  #include "touch_keys.hpp"
+  //#include "touch_keys.hpp"
 #elif defined(INKPLATE_6PLUS)
+  #include "eink_6plus.hpp" //
   #include "touch_screen.hpp"
   #include "front_light.hpp"
 #endif
 
 #if __INKPLATE_PLATFORM__
   MCP23017  mcp_int(0x20);
-  Battery   battery(mcp_int);
+  //Battery   battery(mcp_int);
   #if defined(EXTENDED_CASE) && (defined(INKPLATE_6) || defined(INKPLATE_10))
     PressKeys press_keys(mcp_int);
   #elif defined(INKPLATE_6) || defined(INKPLATE_10)
-    TouchKeys touch_keys(mcp_int);
+    //TouchKeys touch_keys(mcp_int);
   #elif defined(INKPLATE_6PLUS)
     TouchScreen touch_screen(mcp_int);
     FrontLight   front_light(mcp_int);
@@ -65,11 +66,11 @@ Distributed as-is; no warranty is given.
   RTC       rtc(0x51);
 #else
   extern MCP23017  mcp_int;
-  extern Battery   battery;
+  //extern Battery   battery;
   #if defined(EXTENDED_CASE)
     extern PressKeys press_keys;
   #elif defined(INKPLATE_6) || defined(INKPLATE_10)
-    extern TouchKeys touch_keys;
+    //extern TouchKeys touch_keys;
   #elif defined(INKPLATE_6PLUS)
     extern TouchScreen touch_screen;
     extern FrontLight   front_light;
